@@ -1,15 +1,14 @@
 import subprocess
 import psutil
 import os
-import time
 from bot_actions import *
-from key_words import  *
+from key_words import *
 
 
 def open_process(process_name):
     try:
         subprocess.call([str(process_name)])
-    except:
+    except ValueError as err:
         bot_negative(process_name)
         pass
 
@@ -27,26 +26,41 @@ def kill_process(process_name):
 def block_pc():
     try:
         os.system("systemctl suspend")
-    except:
+    except ValueError as err:
         bot_negative("block")
 
 
-def turn_of_pc(argument):
-    current_time = time.strftime('%H:%M:%S', time.localtime())
-    if argument == "now":
-        os.system("shutdown now")
-    elif argument == "reboot":
-        os.system("shutdown -r")
-    elif argument == "":
-        os.system("shutdown")
-    else:
-        bot_not_encounter(argument)
+def turn_of_pc(argument, answer):
+    try:
+        if alert(answer):
+            if argument == "now":
+                os.system("shutdown now")
+            elif argument == "reboot":
+                os.system("shutdown -r")
+            elif argument == "":
+                os.system("shutdown")
+            else:
+                bot_not_encounter(argument)
+        else:
+            bot_aproval(argument)
+    except ValueError as err:
+        bot_cancel_process(err)
 
 
-def alert(argument):
-    if is_in_dict(argument, "accept"):
+def reboot(answer):
+    try:
+        if alert(answer):
+            os.system("reboot")
+        else:
+            bot_cancel_process("reboot")
+    except ValueError as err:
+        bot_cancel_process(err)
+
+
+def alert(answer):
+    if is_in_dict(answer, "accept"):
         return True
-    elif is_in_dict(argument, "decline"):
+    elif is_in_dict(answer, "decline"):
         return False
     else:
         raise ValueError("Answer given is not currently recognized")
