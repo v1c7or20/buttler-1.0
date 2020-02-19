@@ -8,16 +8,16 @@ from key_words import *
 def open_process(process_name):
     try:
         subprocess.call([str(process_name)])
-    except ValueError as err:
+    except:
         bot_negative(process_name)
         pass
 
 
 def kill_process(process_name):
     for process in psutil.process_iter(["name", "exe", "cmdline"]):
-        if process.info['name'] == str(process_name):
+        if process.info['name'] == str(process_name).lower():
             process.terminate()
-            bot_aproval(process_name)
+            bot_aproval("kill " + process_name)
             break
     bot_not_encounter(process_name)
     return 0
@@ -26,7 +26,7 @@ def kill_process(process_name):
 def block_pc():
     try:
         os.system("systemctl suspend")
-    except ValueError as err:
+    except:
         bot_negative("block")
 
 

@@ -1,9 +1,7 @@
-from pc_comands import *
+from voicecomands import *
 import time
 
-
-
-
+action(get_voice_command())
 print("hola mundo")
 open_process("firefo")
 kill_process("firefo")
